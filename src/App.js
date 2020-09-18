@@ -1,28 +1,25 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from './components/home';
 import Collect from './components/collect';
+import Menu from './components/menu';
 import './App.css';
 
 function App() {
+  
   return (
     <Router>
-      <div>
-        <div className="scrollmenu">
-          <Link to="/home">首頁</Link>
-          <Link to="/collect">收藏頁</Link>
-        </div>
-        <Switch>
-          <Route path="/play">
-          </Route>
-          <Route path="/collect">
-            <Collect />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
-        </Switch>
-      </div>
+      <Menu/>
+      <Switch>
+        <Route path="/play">
+        </Route>
+        <Route path="/collect">
+          <Collect />
+        </Route>
+        <Route path="/">
+          <Home />
+        </Route>
+      </Switch>
     </Router>
   );
 }
