@@ -59,11 +59,58 @@
   background-color: #777;
 }
 
-.videoItem {
-  float: left;
-  width: 25%;
-  padding: 25px 0;
-  position: relative;
+@media (min-width: 320px) {
+  .videoItem {
+    float: left;
+    width: 100%;
+    padding: 25px 0;
+    position: relative;
+  }
+}
+
+@media (min-width: 768px) {
+  .videoItem {
+    float: left;
+    width: 50%;
+    padding: 25px 0;
+    position: relative;
+  }
+}
+
+@media (min-width: 992px) {
+  .videoItem {
+    float: left;
+    width: 33.3%;
+    padding: 25px 0;
+    position: relative;
+  }
+}
+
+@media (min-width: 1200px) {
+  .videoItem {
+    float: left;
+    width: 25%;
+    padding: 25px 0;
+    position: relative;
+  }
+}
+
+@media (min-width: 2048px) {
+  .videoItem {
+    float: left;
+    width: 20%;
+    padding: 25px 0;
+    position: relative;
+  }
+}
+
+@media (min-width: 2560px) {
+  .videoItem {
+    float: left;
+    width: 16%;
+    padding: 25px 0;
+    position: relative;
+  }
 }
 
 .title {
@@ -94,8 +141,8 @@
 
 .timeThumb {
   position: absolute;
-  top: 180px;
-  right: 60px;
+  /* top: 180px;
+  right: 60px; */
   background: rgba(0, 0, 0, 1);
   border-radius: 5px;
   color: white;
@@ -114,4 +161,29 @@
   display: block;
   color: black;
   background-color: #ffcc00;
+}
+
+.pagination {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin: 30px;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.pagination a.active {
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 5px;
+}
+
+.pagination a.pageChanger:hover:not(.active) {
+  background-color: #ddd;
+  border-radius: 5px;
 }
