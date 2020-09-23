@@ -2,13 +2,14 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 function VideoDisplay(props) {
-    const videoItems = props.videoItems;
     const inputEl = React.useRef(null);
     const inputTimeEl = React.useRef(null);
     const [picWidth, setPicWidth] = React.useState(0);
     const [picHeight, setPicHeight] = React.useState(0);
     const [timeWidth, setTimeWidth] = React.useState(0);
     const [pageNumber, setPageNumber] = React.useState(1);
+    const videoItems = props.from === 'home' && props.videoItems !== undefined ? Object.keys(props.videoItems).length > 0 ? props.videoItems[pageNumber - 1] : null
+        : props.videoItems;
 
     const handlePic = () => {
         setPicWidth(inputEl.current.clientWidth - 10);
@@ -44,7 +45,7 @@ function VideoDisplay(props) {
 
     return (
         <>
-            {videoItems !== undefined && videoItems[pageNumber-1].map((item) => {
+            {videoItems !== undefined && videoItems.map((item) => {
                 return (
                     <div className="videoItem" key={item.id}>
                         <figure>
@@ -76,20 +77,21 @@ function VideoDisplay(props) {
                 )
             })
             }
-            <br />
-            <div className="pagination">
-                <a href={null} onClick={() => pageClickHandler('pre')}>&laquo;</a>
-                <a href={null} onClick={() => pageClickHandler(1)} className={pageNumber === 1 ? 'active' : null}>1</a>
-                <a href={null} onClick={() => pageClickHandler(2)} className={pageNumber === 2 ? 'active' : null}>2</a>
-                <a href={null} onClick={() => pageClickHandler(3)} className={pageNumber === 3 ? 'active' : null}>3</a>
-                <a href={null} onClick={() => pageClickHandler(4)} className={pageNumber === 4 ? 'active' : null}>4</a>
-                <a href={null} onClick={() => pageClickHandler(5)} className={pageNumber === 5 ? 'active' : null}>5</a>
-                <a href={null} onClick={() => pageClickHandler(6)} className={pageNumber === 6 ? 'active' : null}>6</a>
-                <a href={null} onClick={() => pageClickHandler(7)} className={pageNumber === 7 ? 'active' : null}>7</a>
-                <a href={null} onClick={() => pageClickHandler(8)} className={pageNumber === 8 ? 'active' : null}>8</a>
-                <a href={null} onClick={() => pageClickHandler(9)} className={pageNumber === 9 ? 'active' : null}>9</a>
-                <a href={null} onClick={() => pageClickHandler('next')}>&raquo;</a>
-            </div>
+            {props.from === 'home' &&
+                <div className="pagination">
+                    <a href={null} onClick={() => pageClickHandler('pre')}>&laquo;</a>
+                    <a href={null} onClick={() => pageClickHandler(1)} className={pageNumber === 1 ? 'active' : null}>1</a>
+                    <a href={null} onClick={() => pageClickHandler(2)} className={pageNumber === 2 ? 'active' : null}>2</a>
+                    <a href={null} onClick={() => pageClickHandler(3)} className={pageNumber === 3 ? 'active' : null}>3</a>
+                    <a href={null} onClick={() => pageClickHandler(4)} className={pageNumber === 4 ? 'active' : null}>4</a>
+                    <a href={null} onClick={() => pageClickHandler(5)} className={pageNumber === 5 ? 'active' : null}>5</a>
+                    <a href={null} onClick={() => pageClickHandler(6)} className={pageNumber === 6 ? 'active' : null}>6</a>
+                    <a href={null} onClick={() => pageClickHandler(7)} className={pageNumber === 7 ? 'active' : null}>7</a>
+                    <a href={null} onClick={() => pageClickHandler(8)} className={pageNumber === 8 ? 'active' : null}>8</a>
+                    <a href={null} onClick={() => pageClickHandler(9)} className={pageNumber === 9 ? 'active' : null}>9</a>
+                    <a href={null} onClick={() => pageClickHandler('next')}>&raquo;</a>
+                </div>
+            }
         </>
     )
 }
