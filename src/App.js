@@ -18,56 +18,69 @@ function App() {
   const [totalPage, setTotalPage] = React.useState(0);
   const [loadingStatus, setLoadingStatus] = React.useState(false);
   const [isFirst, setIsFirst] = React.useState(true);
+  const [curChannel, setCurChannel] = React.useState('Gary');
 
   React.useEffect(() => {
-    async function fetchData() {
-      let tempItems = [];
-      let url =
-        "https://www.googleapis.com/youtube/v3/" +
-        "playlistItems?part=snippet,contentDetails,status" +
-        "&playlistId=UUPnponLRAgfnDuHE7OsxFOQ" +
-        "&key=AIzaSyBVGU4seqI1-erDl8TZHd2mo4_orBgy_NY" +
-        "&maxResults=50";
-      // 第一次Fetch
-      await fetch(url, { method: 'get' })
-        .then(function (response) {
-          return response.json();
-        }).then((jsonData) => {
-          if (jsonData.error !== undefined && jsonData.error !== null && jsonData.error.code === 403) {
-            alert('本日流量已用盡');
-            return;
-          }
-          tempItems = tempItems.concat(jsonData.items);
-          setTotalVideo(jsonData.pageInfo.totalResults > 100 ? 100 : jsonData.pageInfo.totalResults);
-          if (jsonData.nextPageToken !== undefined) {
-            // 第二次Fetch
-            url = url + "&pageToken=" + jsonData.nextPageToken;
-            fetch(url, { method: 'get' })
-              .then(function (response) {
-                return response.json();
-              }).then((jsonData) => {
-                tempItems = tempItems.concat(jsonData.items);
-                tempItems = splitItems(tempItems);
-                setVideoItems(tempItems);
-                setLoadingStatus(true);
-              }).catch(function (err) {
-                console.log('error')
-              })
-          } else {
-            tempItems = splitItems(tempItems);
-            setVideoItems(tempItems);
-            setLoadingStatus(true);
-          }
-        }).catch(function (err) {
-          console.log(err);
-        })
-    }
-
     if (isFirst) {
-      fetchData();
+      fetchData('Gary');
       setIsFirst(false);
     }
   })
+
+  function fetchData(channel) {
+    let tempItems = [];
+    setLoadingStatus(false);
+    let id = '';
+    if (channel === 'Gary') {
+      id = 'UUPnponLRAgfnDuHE7OsxFOQ';
+    } else if (channel === 'Funny') {
+      id = '';
+    } else if ( channel === 'music' ) {
+      id = 'UUudwNYFE5jCpfRdoz6iGwXA';
+    }
+    let url =
+      "https://www.googleapis.com/youtube/v3/" +
+      "playlistItems?part=snippet,contentDetails,status" +
+      "&playlistId=" + id +
+      "&key=AIzaSyBVGU4seqI1-erDl8TZHd2mo4_orBgy_NY" +
+      "&maxResults=50";
+    // 第一次Fetch
+    fetch(url, { method: 'get' })
+      .then(function (response) {
+        return response.json();
+      }).then((jsonData) => {
+        if (jsonData.error !== undefined && jsonData.error !== null && jsonData.error.code === 403) {
+          alert('本日流量已用盡');
+          return;
+        } else if (jsonData.error !== undefined && jsonData.error !== null && jsonData.error.code === 404) {
+          alert('請檢查PlayListID是否有誤');
+          return;
+        }
+        tempItems = tempItems.concat(jsonData.items);
+        setTotalVideo(jsonData.pageInfo.totalResults > 100 ? 100 : jsonData.pageInfo.totalResults);
+        if (jsonData.nextPageToken !== undefined) {
+          // 第二次Fetch
+          url = url + "&pageToken=" + jsonData.nextPageToken;
+          fetch(url, { method: 'get' })
+            .then(function (response) {
+              return response.json();
+            }).then((jsonData) => {
+              tempItems = tempItems.concat(jsonData.items);
+              tempItems = splitItems(tempItems);
+              setVideoItems(tempItems);
+              setLoadingStatus(true);
+            }).catch(function (err) {
+              console.log('error')
+            })
+        } else {
+          tempItems = splitItems(tempItems);
+          setVideoItems(tempItems);
+          setLoadingStatus(true);
+        }
+      }).catch(function (err) {
+        console.log(err);
+      })
+  }
 
   function addCollectItems(item) {
     setCollectItems(oldArray => [...oldArray, item]);
@@ -76,9 +89,9 @@ function App() {
   function deleteCollectItems(item) {
     let index = collectItems.findIndex((el) => el.id === item.id);
     if (index > -1) {
-      let temp = collectItems;
+      let temp = [...collectItems];
       temp.splice(index, 1);
-      setCollectItems(...temp);
+      setCollectItems(temp);
     }
   }
 
@@ -96,6 +109,12 @@ function App() {
     return tempArray;
   }
 
+  async function changeChannel(channel) {
+    if ( channel === curChannel ) return;
+    await fetchData(channel);
+    setCurChannel(curChannel);
+  }
+
   return (
     <>
       {!loadingStatus &&
@@ -103,8 +122,8 @@ function App() {
       }
 
       <Router>
-        <Menu curTab={curTab} setCurTab={(tab) => setCurTab(tab)} />
-        <Route path="/" render={(rest) => (<Home setCurTab={(tab) => setCurTab(tab)} videoItems={videoItems} totalVideo={totalVideo} collectItems={collectItems} addCollectItems={(item) => addCollectItems(item)} totalPage={totalPage} />)}>
+        <Menu changeChannel={(channel) => changeChannel(channel)} curTab={curTab} setCurTab={(tab) => setCurTab(tab)} />
+        <Route path="/" render={() => (<Home setCurTab={(tab) => setCurTab(tab)} videoItems={videoItems} totalVideo={totalVideo} collectItems={collectItems} addCollectItems={(item) => addCollectItems(item)} totalPage={totalPage} />)}>
           <Route path="/play" render={() => <Play setCurTab={(tab) => setCurTab(tab)} />} />
           <Route path="/collect" render={() => <Collect collectItems={collectItems} deleteCollectItems={(item) => deleteCollectItems(item)} setCurTab={(tab) => setCurTab(tab)} />} />
           <Route path="/home" render={() => <Home setCurTab={(tab) => setCurTab(tab)} videoItems={videoItems} totalVideo={totalVideo} collectItems={collectItems} addCollectItems={(item) => addCollectItems(item)} totalPage={totalPage} />} />

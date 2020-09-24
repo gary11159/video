@@ -6,6 +6,7 @@ function Collect(props) {
             props.setCurTab('collect');
         }
     });
+
     return (
         <div>
             {Object.keys(props.collectItems).length > 0 ?

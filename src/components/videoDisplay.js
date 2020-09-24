@@ -20,7 +20,7 @@ function VideoDisplay(props) {
             setTimeWidth(inputTimeEl.current.clientWidth - 20);
         }
     };
-    
+
     React.useEffect(() => {
         window.addEventListener('resize', handlePic);
         return (() => {
@@ -57,6 +57,7 @@ function VideoDisplay(props) {
     for (let i = 0; i < props.totalPage; i++) {
         paginationItem.push(<a href={null} key={i} onClick={() => pageClickHandler(i + 1)} className={pageNumber === i + 1 ? 'active' : null}>{i + 1}</a>);
     }
+
     return (
         <>
             {videoItems !== undefined && videoItems.map((item) => {
@@ -74,6 +75,7 @@ function VideoDisplay(props) {
                                     alt=""
                                     ref={inputEl}
                                     onLoad={() => donePic()}
+                                    style={{ width: '100%' }}
                                 />
                             </Link>
                             <div className="timeThumb" style={{ top: picHeight, left: picWidth - timeWidth }} ref={inputTimeEl}>影片長度</div>
