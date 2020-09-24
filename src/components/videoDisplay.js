@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { HashRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 function VideoDisplay(props) {
     const inputEl = React.useRef(null);
@@ -10,15 +10,17 @@ function VideoDisplay(props) {
     const [pageNumber, setPageNumber] = React.useState(1);
     const videoItems = props.from === 'home' && props.videoItems !== undefined ? Object.keys(props.videoItems).length > 0 ? props.videoItems[pageNumber - 1] : null
         : props.videoItems;
+    let picDoneNum = 0;
 
     const handlePic = () => {
+        if (inputEl.current === null) return;
         setPicWidth(inputEl.current.clientWidth - 10);
         setPicHeight(inputEl.current.clientHeight);
         if (inputTimeEl !== null && inputTimeEl.current !== null) {
             setTimeWidth(inputTimeEl.current.clientWidth - 20);
         }
     };
-
+    
     React.useEffect(() => {
         window.addEventListener('resize', handlePic);
         return (() => {
@@ -35,28 +37,46 @@ function VideoDisplay(props) {
     function pageClickHandler(event) {
         if (event === 'pre') {
             setPageNumber(pageNumber > 1 ? pageNumber - 1 : pageNumber);
-        }
-        else if (event === 'next') {
+        } else if (event === 'next') {
             setPageNumber(pageNumber < 9 ? pageNumber + 1 : pageNumber)
         } else {
             setPageNumber(event)
         }
     }
 
+    function donePic() {
+        if (picDoneNum === videoItems.length - 1) {
+            picDoneNum = 0;
+            handlePic();
+        } else {
+            picDoneNum++;
+        }
+    }
+
+    let paginationItem = [];
+    for (let i = 0; i < props.totalPage; i++) {
+        paginationItem.push(<a href={null} key={i} onClick={() => pageClickHandler(i + 1)} className={pageNumber === i + 1 ? 'active' : null}>{i + 1}</a>);
+    }
     return (
         <>
             {videoItems !== undefined && videoItems.map((item) => {
                 return (
                     <div className="videoItem" key={item.id}>
                         <figure>
-                            <Link to="/play">
+                            <Link to={{
+                                pathname: 'play',
+                                state: {
+                                    item: item
+                                }
+                            }}>
                                 <img
                                     src={item.snippet.thumbnails.medium.url}
                                     alt=""
                                     ref={inputEl}
+                                    onLoad={() => donePic()}
                                 />
                             </Link>
-                            {/* <div className="timeThumb" style={{ top: picHeight, left: picWidth - timeWidth }} ref={inputTimeEl}>1:10:30</div> */}
+                            <div className="timeThumb" style={{ top: picHeight, left: picWidth - timeWidth }} ref={inputTimeEl}>影片長度</div>
                         </figure>
                         <h3 className="title">
                             {item.snippet.title}
@@ -73,6 +93,11 @@ function VideoDisplay(props) {
                                 }
                             </>
                         }
+                        {props.from === 'collect' &&
+                            <>
+                                <button className="btn" style={{ backgroundColor: 'red' }} onClick={() => props.deleteCollectItems(item)}>刪除此收藏</button>
+                            </>
+                        }
                     </div>
                 )
             })
@@ -80,15 +105,7 @@ function VideoDisplay(props) {
             {props.from === 'home' &&
                 <div className="pagination">
                     <a href={null} onClick={() => pageClickHandler('pre')}>&laquo;</a>
-                    <a href={null} onClick={() => pageClickHandler(1)} className={pageNumber === 1 ? 'active' : null}>1</a>
-                    <a href={null} onClick={() => pageClickHandler(2)} className={pageNumber === 2 ? 'active' : null}>2</a>
-                    <a href={null} onClick={() => pageClickHandler(3)} className={pageNumber === 3 ? 'active' : null}>3</a>
-                    <a href={null} onClick={() => pageClickHandler(4)} className={pageNumber === 4 ? 'active' : null}>4</a>
-                    <a href={null} onClick={() => pageClickHandler(5)} className={pageNumber === 5 ? 'active' : null}>5</a>
-                    <a href={null} onClick={() => pageClickHandler(6)} className={pageNumber === 6 ? 'active' : null}>6</a>
-                    <a href={null} onClick={() => pageClickHandler(7)} className={pageNumber === 7 ? 'active' : null}>7</a>
-                    <a href={null} onClick={() => pageClickHandler(8)} className={pageNumber === 8 ? 'active' : null}>8</a>
-                    <a href={null} onClick={() => pageClickHandler(9)} className={pageNumber === 9 ? 'active' : null}>9</a>
+                    {paginationItem}
                     <a href={null} onClick={() => pageClickHandler('next')}>&raquo;</a>
                 </div>
             }

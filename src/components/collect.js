@@ -1,18 +1,23 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import VideoDisplay from './videoDisplay';
 function Collect(props) {
-    React.useEffect(()=> {
-        if ( props.curTab !== 'collect' ) {
+    React.useEffect(() => {
+        if (props.curTab !== 'collect') {
             props.setCurTab('collect');
         }
     });
     return (
-        <VideoDisplay
-            videoItems={props.collectItems}
-            collectItems={props.collectItems}
-            from={'collect'}
-        />
+        <div>
+            {Object.keys(props.collectItems).length > 0 ?
+                <VideoDisplay
+                    videoItems={props.collectItems}
+                    collectItems={props.collectItems}
+                    deleteCollectItems={(item) => props.deleteCollectItems(item)}
+                    from={'collect'}
+                />
+                :
+                <h1 className="video" style={{ marginTop: '50px' }}>目前無收藏影片</h1>}
+        </div>
     )
 }
 
