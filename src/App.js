@@ -34,23 +34,23 @@ function App() {
     if (channel === 'Gary') {
       id = 'UUPnponLRAgfnDuHE7OsxFOQ';
     } else if (channel === 'Funny') {
-      id = '';
-    } else if ( channel === 'music' ) {
+      id = 'UUzjNxGvrqfxL9KGkObbzrmg';
+    } else if (channel === 'Music') {
       id = 'UUudwNYFE5jCpfRdoz6iGwXA';
     }
     let url =
       "https://www.googleapis.com/youtube/v3/" +
       "playlistItems?part=snippet,contentDetails,status" +
       "&playlistId=" + id +
-      "&key=AIzaSyBVGU4seqI1-erDl8TZHd2mo4_orBgy_NY" +
-      "&maxResults=50";
+      "&key=AIzaSyCcLoBWrSwqFI5uxY_8qdhqCkse_QEcRDM" +
+      "&maxResults=100";
     // 第一次Fetch
     fetch(url, { method: 'get' })
       .then(function (response) {
         return response.json();
       }).then((jsonData) => {
         if (jsonData.error !== undefined && jsonData.error !== null && jsonData.error.code === 403) {
-          alert('本日流量已用盡');
+          alert('API出了些問題，可能是本日流量已用盡，請重整試試看');
           return;
         } else if (jsonData.error !== undefined && jsonData.error !== null && jsonData.error.code === 404) {
           alert('請檢查PlayListID是否有誤');
@@ -66,20 +66,61 @@ function App() {
               return response.json();
             }).then((jsonData) => {
               tempItems = tempItems.concat(jsonData.items);
-              tempItems = splitItems(tempItems);
-              setVideoItems(tempItems);
-              setLoadingStatus(true);
+              getVideoDetail(tempItems);
             }).catch(function (err) {
               console.log('error')
             })
         } else {
-          tempItems = splitItems(tempItems);
-          setVideoItems(tempItems);
-          setLoadingStatus(true);
+          getVideoDetail(tempItems);
         }
       }).catch(function (err) {
         console.log(err);
+        setLoadingStatus(true);
       })
+  }
+
+  async function getVideoDetail(items) {
+    let i = 0
+    let templateUrl =
+      "https://www.googleapis.com/youtube/v3/" +
+      "videos?part=snippet,contentDetails" +
+      "&key=AIzaSyCcLoBWrSwqFI5uxY_8qdhqCkse_QEcRDM";
+    let tempItems = [];
+    let url = templateUrl;
+    for (i = 0; i < items.length && i < 50; i++) {
+      url += "&id=" + items[i].contentDetails.videoId;
+    }
+
+    await fetch(url, { method: 'get' }).then(function (response) {
+      return response.json();
+    }).then((jsonData) => {
+      tempItems = jsonData.items;
+    }).catch(function (err) {
+      console.log(err)
+    })
+
+    if (i === items.length) {
+      tempItems = splitItems(tempItems);
+      setVideoItems(tempItems);
+      setLoadingStatus(true);
+      return;
+    }
+
+    url = templateUrl;
+    for (i = 50; i < items.length ; i++) {
+      url += "&id=" + items[i].contentDetails.videoId;
+    }
+
+    fetch(url, { method: 'get' }).then(function (response) {
+      return response.json();
+    }).then((jsonData) => {
+      tempItems = tempItems.concat(jsonData.items);
+      tempItems = splitItems(tempItems);
+      setVideoItems(tempItems);
+      setLoadingStatus(true);
+    }).catch(function (err) {
+      console.log(err)
+    })
   }
 
   function addCollectItems(item) {
@@ -110,9 +151,10 @@ function App() {
   }
 
   async function changeChannel(channel) {
-    if ( channel === curChannel ) return;
+    console.log(channel, curChannel);
+    if (channel === curChannel) return;
     await fetchData(channel);
-    setCurChannel(curChannel);
+    setCurChannel(channel);
   }
 
   return (

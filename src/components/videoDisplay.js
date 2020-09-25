@@ -3,7 +3,6 @@ import { HashRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 function VideoDisplay(props) {
     const inputEl = React.useRef(null);
-    const inputTimeEl = React.useRef(null);
     const [picWidth, setPicWidth] = React.useState(0);
     const [picHeight, setPicHeight] = React.useState(0);
     const [timeWidth, setTimeWidth] = React.useState(0);
@@ -14,11 +13,8 @@ function VideoDisplay(props) {
 
     const handlePic = () => {
         if (inputEl.current === null) return;
-        setPicWidth(inputEl.current.clientWidth - 10);
+        setPicWidth(inputEl.current.clientWidth);
         setPicHeight(inputEl.current.clientHeight);
-        if (inputTimeEl !== null && inputTimeEl.current !== null) {
-            setTimeWidth(inputTimeEl.current.clientWidth - 20);
-        }
     };
 
     React.useEffect(() => {
@@ -27,12 +23,6 @@ function VideoDisplay(props) {
             window.removeEventListener('resize', handlePic);
         })
     }, []);
-
-    React.useEffect(() => {
-        if (inputEl !== null && inputEl.current !== null) {
-            handlePic();
-        }
-    });
 
     function pageClickHandler(event) {
         if (event === 'pre') {
@@ -50,6 +40,19 @@ function VideoDisplay(props) {
             handlePic();
         } else {
             picDoneNum++;
+        }
+    }
+
+    function durationHandler(item) {
+        if ( item.contentDetails !== undefined ) {
+            let duration = item.contentDetails.duration;
+            duration = duration.replace("PT", "");
+            duration = duration.replace("M", "分");
+            duration = duration.replace("S", "秒");
+            duration = duration.replace("H", "時");
+            return duration.replace("PT", "");
+        } else {
+            return "讀取中";
         }
     }
 
@@ -78,7 +81,9 @@ function VideoDisplay(props) {
                                     style={{ width: '100%' }}
                                 />
                             </Link>
-                            <div className="timeThumb" style={{ top: picHeight, left: picWidth - timeWidth }} ref={inputTimeEl}>影片長度</div>
+                            <div className="timeThumb" style={{ top: picHeight, right: picWidth / 4 }}>
+                                {durationHandler(item)}
+                            </div>
                         </figure>
                         <h3 className="title">
                             {item.snippet.title}
