@@ -42,7 +42,7 @@ function App() {
       "https://www.googleapis.com/youtube/v3/" +
       "playlistItems?part=snippet,contentDetails,status" +
       "&playlistId=" + id +
-      "&key=AIzaSyCcLoBWrSwqFI5uxY_8qdhqCkse_QEcRDM" +
+      "&key=AIzaSyBVGU4seqI1-erDl8TZHd2mo4_orBgy_NY" +
       "&maxResults=100";
     // 第一次Fetch
     fetch(url, { method: 'get' })
@@ -84,7 +84,7 @@ function App() {
     let templateUrl =
       "https://www.googleapis.com/youtube/v3/" +
       "videos?part=snippet,contentDetails" +
-      "&key=AIzaSyCcLoBWrSwqFI5uxY_8qdhqCkse_QEcRDM";
+      "&key=AIzaSyBVGU4seqI1-erDl8TZHd2mo4_orBgy_NY";
     let tempItems = [];
     let url = templateUrl;
     for (i = 0; i < items.length && i < 50; i++) {
