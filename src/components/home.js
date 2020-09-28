@@ -17,6 +17,7 @@ function Home(props) {
                 totalVideo={props.totalVideo}
                 from={'home'}
                 totalPage={props.totalPage}
+                curChannel={props.curChannel}
             />
         </div>
     )

@@ -94,6 +94,13 @@ function App() {
     await fetch(url, { method: 'get' }).then(function (response) {
       return response.json();
     }).then((jsonData) => {
+      if (jsonData.error !== undefined && jsonData.error !== null && jsonData.error.code === 403) {
+        alert('API出了些問題，可能是本日流量已用盡，請重整試試看');
+        return;
+      } else if (jsonData.error !== undefined && jsonData.error !== null && jsonData.error.code === 404) {
+        alert('請檢查PlayListID是否有誤');
+        return;
+      }
       tempItems = jsonData.items;
     }).catch(function (err) {
       console.log(err)
@@ -114,6 +121,13 @@ function App() {
     fetch(url, { method: 'get' }).then(function (response) {
       return response.json();
     }).then((jsonData) => {
+      if (jsonData.error !== undefined && jsonData.error !== null && jsonData.error.code === 403) {
+        alert('API出了些問題，可能是本日流量已用盡，請重整試試看');
+        return;
+      } else if (jsonData.error !== undefined && jsonData.error !== null && jsonData.error.code === 404) {
+        alert('請檢查PlayListID是否有誤');
+        return;
+      }
       tempItems = tempItems.concat(jsonData.items);
       tempItems = splitItems(tempItems);
       setVideoItems(tempItems);
@@ -167,8 +181,8 @@ function App() {
         <Menu changeChannel={(channel) => changeChannel(channel)} curTab={curTab} setCurTab={(tab) => setCurTab(tab)} />
         <Route path="/" render={() => (<Home setCurTab={(tab) => setCurTab(tab)} videoItems={videoItems} totalVideo={totalVideo} collectItems={collectItems} addCollectItems={(item) => addCollectItems(item)} totalPage={totalPage} />)}>
           <Route path="/play" render={() => <Play setCurTab={(tab) => setCurTab(tab)} />} />
-          <Route path="/collect" render={() => <Collect collectItems={collectItems} deleteCollectItems={(item) => deleteCollectItems(item)} setCurTab={(tab) => setCurTab(tab)} />} />
-          <Route path="/home" render={() => <Home setCurTab={(tab) => setCurTab(tab)} videoItems={videoItems} totalVideo={totalVideo} collectItems={collectItems} addCollectItems={(item) => addCollectItems(item)} totalPage={totalPage} />} />
+          <Route path="/collect" render={() => <Collect curChannel={curChannel} collectItems={collectItems} deleteCollectItems={(item) => deleteCollectItems(item)} setCurTab={(tab) => setCurTab(tab)} />} />
+          <Route path="/home" render={() => <Home curChannel={curChannel} setCurTab={(tab) => setCurTab(tab)} videoItems={videoItems} totalVideo={totalVideo} collectItems={collectItems} addCollectItems={(item) => addCollectItems(item)} totalPage={totalPage} />} />
           <Redirect to={"/home"} />
         </Route>
 

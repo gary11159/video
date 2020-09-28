@@ -15,6 +15,7 @@ function Collect(props) {
                     collectItems={props.collectItems}
                     deleteCollectItems={(item) => props.deleteCollectItems(item)}
                     from={'collect'}
+                    curChannel={props.curChannel}
                 />
                 :
                 <h1 className="video" style={{ marginTop: '50px' }}>目前無收藏影片</h1>}

@@ -5,7 +5,7 @@ function VideoDisplay(props) {
     const inputEl = React.useRef(null);
     const [picWidth, setPicWidth] = React.useState(0);
     const [picHeight, setPicHeight] = React.useState(0);
-    const [timeWidth, setTimeWidth] = React.useState(0);
+    const [showDuration, setShowDuration] = React.useState(false);
     const [pageNumber, setPageNumber] = React.useState(1);
     const videoItems = props.from === 'home' && props.videoItems !== undefined ? Object.keys(props.videoItems).length > 0 ? props.videoItems[pageNumber - 1] : null
         : props.videoItems;
@@ -24,6 +24,11 @@ function VideoDisplay(props) {
         })
     }, []);
 
+    React.useEffect(() => {
+        setPageNumber(1);
+    }, [props.curChannel]);
+
+
     function pageClickHandler(event) {
         if (event === 'pre') {
             setPageNumber(pageNumber > 1 ? pageNumber - 1 : pageNumber);
@@ -37,6 +42,7 @@ function VideoDisplay(props) {
     function donePic() {
         if (picDoneNum === videoItems.length - 1) {
             picDoneNum = 0;
+            setShowDuration(true);
             handlePic();
         } else {
             picDoneNum++;
@@ -44,7 +50,7 @@ function VideoDisplay(props) {
     }
 
     function durationHandler(item) {
-        if ( item.contentDetails !== undefined ) {
+        if (item.contentDetails !== undefined) {
             let duration = item.contentDetails.duration;
             duration = duration.replace("PT", "");
             duration = duration.replace("M", "分");
@@ -58,7 +64,7 @@ function VideoDisplay(props) {
 
     let paginationItem = [];
     for (let i = 0; i < props.totalPage; i++) {
-        paginationItem.push(<a href={null} key={i} onClick={() => pageClickHandler(i + 1)} className={pageNumber === i + 1 ? 'active' : null}>{i + 1}</a>);
+        paginationItem.push(<a href={null} key={i} onClick={() => {pageClickHandler(i + 1); setShowDuration(false);}} className={pageNumber === i + 1 ? 'active' : null}>{i + 1}</a>);
     }
 
     return (
@@ -81,9 +87,11 @@ function VideoDisplay(props) {
                                     style={{ width: '100%' }}
                                 />
                             </Link>
-                            <div className="timeThumb" style={{ top: picHeight, right: picWidth / 4 }}>
-                                {durationHandler(item)}
-                            </div>
+                            {showDuration &&
+                                <div className="timeThumb" style={{ top: picHeight, right: picWidth / 4 }}>
+                                    {durationHandler(item)}
+                                </div>
+                            }
                         </figure>
                         <h3 className="title">
                             {item.snippet.title}
