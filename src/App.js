@@ -180,7 +180,7 @@ function App() {
       <Router>
         <Menu changeChannel={(channel) => changeChannel(channel)} curTab={curTab} setCurTab={(tab) => setCurTab(tab)} />
         <Route path="/" render={() => (<Home setCurTab={(tab) => setCurTab(tab)} videoItems={videoItems} totalVideo={totalVideo} collectItems={collectItems} addCollectItems={(item) => addCollectItems(item)} totalPage={totalPage} />)}>
-          <Route path="/play" render={() => <Play setCurTab={(tab) => setCurTab(tab)} />} />
+          <Route path="/play" render={() => <Play setCurTab={(tab) => setCurTab(tab)} setLoadingStatus={(status) => setLoadingStatus(status)}/>} />
           <Route path="/collect" render={() => <Collect curChannel={curChannel} collectItems={collectItems} deleteCollectItems={(item) => deleteCollectItems(item)} setCurTab={(tab) => setCurTab(tab)} />} />
           <Route path="/home" render={() => <Home curChannel={curChannel} setCurTab={(tab) => setCurTab(tab)} videoItems={videoItems} totalVideo={totalVideo} collectItems={collectItems} addCollectItems={(item) => addCollectItems(item)} totalPage={totalPage} />} />
           <Redirect to={"/home"} />
