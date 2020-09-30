@@ -64,7 +64,7 @@ function VideoDisplay(props) {
 
     let paginationItem = [];
     for (let i = 0; i < props.totalPage; i++) {
-        paginationItem.push(<a href={null} key={i} onClick={() => {pageClickHandler(i + 1); setShowDuration(false);}} className={pageNumber === i + 1 ? 'active' : null}>{i + 1}</a>);
+        paginationItem.push(<a href={null} key={i} onClick={() => { pageClickHandler(i + 1); if(pageNumber !== (i + 1) ) setShowDuration(false) ; }} className={pageNumber === i + 1 ? 'active' : null}>{i + 1}</a>);
     }
 
     return (
