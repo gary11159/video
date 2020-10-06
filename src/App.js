@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import { HashRouter as Router, Route } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import Home from './components/home';
 import Collect from './components/collect';
@@ -17,15 +17,11 @@ function App() {
   const [totalVideo, setTotalVideo] = React.useState(0);
   const [totalPage, setTotalPage] = React.useState(0);
   const [loadingStatus, setLoadingStatus] = React.useState(false);
-  const [isFirst, setIsFirst] = React.useState(true);
   const [curChannel, setCurChannel] = React.useState('Gary');
 
   React.useEffect(() => {
-    if (isFirst) {
-      fetchData('Gary');
-      setIsFirst(false);
-    }
-  })
+    fetchData('Gary');
+  }, []);
 
   function fetchData(channel) {
     let tempItems = [];
