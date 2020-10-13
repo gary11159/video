@@ -10,7 +10,8 @@ function VideoDisplay(props) {
     const videoItems = props.from === 'home' && props.videoItems !== undefined ? Object.keys(props.videoItems).length > 0 ? props.videoItems[pageNumber - 1] : null
         : props.videoItems;
     let picDoneNum = 0;
-
+    let paginationItem = [];
+    
     const handlePic = () => {
         if (inputEl.current === null) return;
         setPicWidth(inputEl.current.clientWidth);
@@ -33,7 +34,7 @@ function VideoDisplay(props) {
         if (event === 'pre') {
             setPageNumber(pageNumber > 1 ? pageNumber - 1 : pageNumber);
         } else if (event === 'next') {
-            setPageNumber(pageNumber < 9 ? pageNumber + 1 : pageNumber)
+            setPageNumber(pageNumber < paginationItem.length ? pageNumber + 1 : pageNumber)
         } else {
             setPageNumber(event)
         }
@@ -62,7 +63,6 @@ function VideoDisplay(props) {
         }
     }
 
-    let paginationItem = [];
     for (let i = 0; i < props.totalPage; i++) {
         paginationItem.push(<a href={null} key={i} onClick={() => { pageClickHandler(i + 1); if(pageNumber !== (i + 1) ) setShowDuration(false) ; }} className={pageNumber === i + 1 ? 'active' : null}>{i + 1}</a>);
     }
